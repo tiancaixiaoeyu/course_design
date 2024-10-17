@@ -9,6 +9,7 @@ export function Big_building(props) {
   const { nodes, materials } = useGLTF("/models/Big_Building.glb");
   return (
     <group {...props} dispose={null}>
+   
       <group rotation={[-Math.PI / 2, 0, 0]} scale={100}>
         <mesh
           castShadow

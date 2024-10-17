@@ -11,7 +11,7 @@ export function LobbyAvatar({ ...props }) {
 
   // 加载动画模型
   const { animations: waveAnimation } = useGLTF(
-    "/animations/M_Standing_Expressions_001.glb"
+    "/animations/untitled.glb"
   );
   const { animations: idleAnimation } = useGLTF(
     "/animations/M_Standing_Idle_001.glb"

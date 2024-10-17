@@ -4,6 +4,7 @@ import { useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { Experience } from "./components/Experience";
 import { Loader } from "./components/Loader";
+import { createRoot } from 'react-dom/client';//使用 createRoot 替代 ReactDOM.render的前面导入
 import {
   SocketManager,
   itemsAtom,
@@ -23,7 +24,7 @@ function App() {
     if (progress === 100 && items) {
       setLoaded(true); // 确保当进度100突然回到0时，用户界面不要（UI）淡出。
     }
-  }, [progress]);
+  }, [progress,items]);
 
   return (
     // Redux store 仅提供给你的 React 组件，需要自己触发创建socket对象
@@ -51,3 +52,74 @@ function App() {
 }
 
 export default App;
+import React from 'react';
+//import ReactDOM from 'react-dom';
+// import App from './App';
+// import UserRoleProvider from 'C:/Users/DELL/course_design/client/src/components/UserRoleProvider.js'
+import UserRoleProvider from "./components/UserRoleProvider";
+
+
+function Root() {
+  return (
+    <UserRoleProvider>
+      <App />
+    </UserRoleProvider>
+  );
+}
+
+//ReactDOM.render(<Root />, document.getElementById('root'));
+//说是被弃用了马上， ai改成下面三行
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(<Root />);
+
+//const express = require('express');//说是在客户端下不需要导入express
+
+// // 改成ES6
+// // import express from 'express';
+// // const cors = require('cors');
+//  const app = express();
+
+
+//但是这样app就没有声明，所以先注释掉
+
+// // 允许所有域名访问
+// app.use(cors());
+
+// //或者，你可以只允许特定的域名访问
+// app.use(cors({
+//   origin: 'http://localhost:5174' // 替换为你的前端应用程序域名和端口
+// }));
+
+// // 你的路由和逻辑代码...
+
+// app.listen(3000, () => {
+//   console.log('Server on port 3000');
+// });
+// //import express from 'express';
+// const cors = require('cors');  
+// //const app = express();  
+  
+// // 允许来自 http://localhost:5174 的请求  
+// app.use(cors({ origin: 'http://localhost:5174' }));  
+  
+// // 其他可能的中间件，比如解析请求体的中间件  
+// app.use(express.json()); // 用于解析JSON格式的请求体  
+// app.use(express.urlencoded({ extended: true })); // 用于解析URL编码的请求体  
+  
+// // 配置路由  
+// app.get('/', (req, res) => {  
+//   res.send('Hello, World!');  
+// });  
+  
+// // 更多的路由配置...  
+// app.get('/some-endpoint', (req, res) => {  
+//   // 处理该路由的逻辑  
+//   res.send('Some endpoint');  
+// });  
+  
+// // 启动服务器  
+// const PORT = process.env.PORT || 3000;  
+// app.listen(PORT, () => {  
+//   console.log(`Server is running on port ${PORT}`);  
+// });

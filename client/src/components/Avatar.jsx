@@ -13,8 +13,15 @@ import { useGrid } from "../hooks/useGrid";
 import { useSelector } from "react-redux";
 import { userAtom } from "./SocketManager";
 import { motion } from "framer-motion-3d";
+import { userRoleAtom } from "./UI";
+import { userNameAtom } from "./UI";
+
+import { useContext } from 'react';
+import UserRoleContext from './UserRoleContext';
 
 const MOVEMENT_SPEED = 4;
+//const [userRole, setUserRole] = useState('student'); 
+const userRole ="student"
 
 export function Avatar({
   id,
@@ -22,7 +29,11 @@ export function Avatar({
   avatarUrl = "https://models.readyplayer.me/6575b1a3b21c8b3e80ba1a83.glb",
   ...props
 }) {
-
+  // const [userRole, setUserRole] = useState('student'); 
+  // const { userRole, setUserRole } = useContext(UserRoleContext);
+  const [userRole, setUserRole] = useAtom(userRoleAtom);
+  const [userName ,setUserName] = useAtom(userNameAtom);
+  //setUserRole('student');
   const socket = useSelector((state)=>state.socket)
   const [chatMessage, setChatMessage] = useState("");
   const position = useMemo(() => props.position, []);
@@ -150,14 +161,30 @@ export function Avatar({
       position={position}
       dispose={null}
       name={`character-${id}`}
+      
     >
-      {/*人物昵称标签*/}
+   {/* <select onChange={e => setUserRole(e.target.value)}>
+   <option value="">请选择角色...</option>
+   <option value="student">团员</option>
+   <option value="teacher">老师</option>
+   </select> */}
+      {/* 人物昵称标签 */}
       <Html position-y={2.2}>
         <div className="w-20 text-white text-center p-3 px-6 -translate-x-1/2">
-          <p className="absolute text-small">团员</p>
+          <p className="absolute text-small">{userRole} {userName}</p>
         </div>
       </Html>
-     
+   
+   {/* // 默认为学生，也可以是 'teacher' */}
+      {/* 人物昵称标签 */}
+{/* <Html position-y={2.2}>
+  <div className="w-20 text-white text-center p-3 px-6 -translate-x-1/2">
+    <p className="absolute text-small">
+      {userRole === 'teacher' ? 'Teacher' : 'Student'}  
+    </p>
+  </div>
+</Html>
+      */}
 
        {/*聊天框*/}
       <Html position-y={2}>

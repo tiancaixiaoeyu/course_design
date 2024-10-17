@@ -10,15 +10,17 @@ import { useAtom } from "jotai";
 import { Suspense, useMemo, useRef } from "react";
 import { LobbyAvatar } from "./LobbyAvatar";
 import { Big_building } from "./Big_building";
-import { mapAtom, roomIDAtom, roomsAtom } from "./SocketManager";
+import { mapAtom, roomIDAtom, roomsAtom, userAtom } from "./SocketManager";
 import { Tablet } from "./Tablet";
 import { avatarUrlAtom } from "./UI";
+//import {userRoleAtom} from'./UI';
 
 import { useSelector } from "react-redux";
 
 let firstLoad = true;
 
 export const Lobby = () => {
+  //const [userRole, setUserRole] = useAtom(userRoleAtom);
   const [rooms] = useAtom(roomsAtom);
   const [avatarUrl] = useAtom(avatarUrlAtom);
   const [_roomID, setRoomID] = useAtom(roomIDAtom);
@@ -125,7 +127,7 @@ export const Lobby = () => {
               {rooms.map((room) => (
                 <div
                   key={room.id}
-                  className="p-4 rounded-lg bg-slate-800 bg-opacity-70 text-white hover:bg-slate-950 transition-colors cursor-pointer pointer-events-auto"
+                  className="p-5 rounded-lg bg-slate-800 bg-opacity-70 text-white hover:bg-slate-950 transition-colors cursor-pointer pointer-events-auto"
                   onClick={() => joinRoom(room.id)}
                 >
                   <p className="text-uppercase font-bold text-lg">

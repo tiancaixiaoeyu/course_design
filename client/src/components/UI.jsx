@@ -1,6 +1,7 @@
 import { atom, useAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
 
+//import {userRole} from './Avatar';
 import { AvatarCreator } from "@readyplayerme/react-avatar-creator";
 import { motion } from "framer-motion";
 import { roomItemsAtom } from "./Room";
@@ -10,6 +11,8 @@ export const buildModeAtom = atom(false);
 export const shopModeAtom = atom(false);
 export const draggedItemAtom = atom(null);
 export const draggedItemRotationAtom = atom(0);
+export const userRoleAtom = atom('student');
+export const userNameAtom= atom('someone')
 
 export const avatarUrlAtom = atom(
   localStorage.getItem("avatarURL") ||
@@ -73,8 +76,15 @@ const PasswordInput = ({ onClose, onSuccess }) => {
 };
 
 
+{/* <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+  <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+</svg> */}
 
 export const UI = () => {
+  const [userRole, setUserRole] = useAtom(userRoleAtom);
+  const [userName, setUserName] = useAtom(userNameAtom);
+  
+
   const socket = useSelector((state)=>state.socket)
   const [buildMode, setBuildMode] = useAtom(buildModeAtom);
   const [shopMode, setShopMode] = useAtom(shopModeAtom);
@@ -88,13 +98,24 @@ export const UI = () => {
   const [avatarUrl, setAvatarUrl] = useAtom(avatarUrlAtom);
   const [roomID, setRoomID] = useAtom(roomIDAtom);
   const [passwordCorrectForRoom, setPasswordCorrectForRoom] = useState(false);
- 
+  
   const leaveRoom = () => {
     socket.emit("leaveRoom");
     setRoomID(null);
     setBuildMode(false);
     setShopMode(false);
   };
+  const setRole = ()=> {
+    if(userRole=='student')
+      setUserRole('teacher');
+    else
+      setUserRole('student');
+
+  };
+  const setName =()=>{
+  //userName=value;
+  }
+
   
   useEffect(() => {
     setPasswordCorrectForRoom(false); // roomID改变默认密码是未通过的状态
@@ -102,12 +123,14 @@ export const UI = () => {
 
   const ref = useRef();
   const [chatMessage, setChatMessage] = useState("");
+  //const [userName, setUserName] = useState("");
   const sendChatMessage = () => {
     if (chatMessage.length > 0) {
       socket.emit("chatMessage", chatMessage);
       setChatMessage("");
     }
   };
+
 
   return (
     <>
@@ -186,6 +209,7 @@ export const UI = () => {
                 </svg>
               </button>
             </div>
+            
           )}
 
            {/* 返回大厅 */}
@@ -399,6 +423,59 @@ export const UI = () => {
                 </svg>
               </button>
             )}
+            { /*SETROLE*/}
+            {!roomID && !shopMode && !buildMode && (
+              <button
+                className="p-4 rounded-full bg-slate-500 text-white drop-shadow-md cursor-pointer hover:bg-slate-800 transition-colors"
+                onClick={setRole}
+              >
+                {userRole}
+              </button>
+            )}
+            {!roomID && !shopMode && !buildMode && (
+              <div className="pointer-events-auto p-4 flex items-center space-x-4">
+              <input
+                type="text"
+                className="w-56 border px-5 p-4 h-full rounded-full"
+                placeholder="请输入昵称..."
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {  // enter按钮也可以发送
+                   setName();
+                  }
+                }}
+                //value={userName}
+               onChange={(e) => setUserName(e.target.value)}
+              />
+              {/* <button
+                className="p-4 rounded-full bg-slate-500 text-white drop-shadow-md cursor-pointer hover:bg-slate-800 transition-colors"
+                //onClick={setName()}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"
+                  />
+                </svg>
+              </button> */}
+              <button
+                className="p-4 rounded-full bg-slate-500 text-white drop-shadow-md cursor-pointer hover:bg-slate-800 transition-colors"
+                onClick={setName}
+              >
+                setname
+              </button>
+            </div>
+             
+            )}
+
+            
           </div>
         </div>
       </motion.div>

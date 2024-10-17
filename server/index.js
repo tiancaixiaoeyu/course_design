@@ -280,10 +280,11 @@ io.on("connection", (socket) => {  //1. 监听：用户连接
 
 // SHOP 
 const items = {
-  washer: {
-    name: "washer",
-    size: [2, 2],
-  },
+
+  // washer: {
+  //   name: "washer",
+  //   size: [2, 2],
+  // },
   toiletSquare: {
     name: "toiletSquare",
     size: [2, 2],

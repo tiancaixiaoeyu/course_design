@@ -1,5 +1,9 @@
 {
   "dependencies": {
+    "cors": "^2.8.5",
     "framer-motion-3d": "^10.16.16"
+  },
+  "devDependencies": {
+    "@babel/preset-react": "^7.24.1"
   }
 }
