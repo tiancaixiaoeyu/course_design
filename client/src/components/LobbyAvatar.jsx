@@ -26,13 +26,16 @@ export function LobbyAvatar({ ...props }) {
   const [init, setInit] = useState(avatarUrl);
 
   useEffect(() => {
-    actions[animation] // 获取动画
-      .reset() //重置
-      .fadeIn(init === avatarUrl ? 0.32 : 0) 
-      .play(); // 播放
-    setInit(avatarUrl); //更新init为当前avatarUrl
+    if (actions[animation]) {
+      actions[animation] // 获取动画
+        .reset() //重置
+        .fadeIn(init === avatarUrl ? 0.32 : 0) 
+        .play(); // 播放
+    }
+    setInit(avatarUrl); // 更新init为当前avatarUrl
     return () => actions[animation]?.fadeOut(0.32); 
-  }, [animation, avatarUrl]);
+  }, [animation, avatarUrl, actions]);
+  
 
 
 // 动画轮播 delay -- expression，6s -- stand，3s --重新执行

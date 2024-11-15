@@ -220,6 +220,7 @@ export function Avatar({
         <primitive object={clone} ref={avatar} />
       </motion.group>
     </group>
+    
   );
 }
 useGLTF.preload(
