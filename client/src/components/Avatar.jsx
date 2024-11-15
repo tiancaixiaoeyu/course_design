@@ -13,8 +13,8 @@ import { useGrid } from "../hooks/useGrid";
 import { useSelector } from "react-redux";
 import { userAtom } from "./SocketManager";
 import { motion } from "framer-motion-3d";
-import { userRoleAtom } from "./UI";
-import { userNameAtom } from "./UI";
+// import { userRoleAtom } from "./UI";
+// import { userNameAtom } from "./UI";
 
 import { useContext } from 'react';
 import UserRoleContext from './UserRoleContext';
@@ -25,14 +25,13 @@ const userRole ="student"
 
 export function Avatar({
   id,
+ 
   //avatarUrl = "https://models.readyplayer.me/64f0265b1db75f90dcfd9e2c.glb",
   avatarUrl = "https://models.readyplayer.me/6575b1a3b21c8b3e80ba1a83.glb",
   ...props
 }) {
-  // const [userRole, setUserRole] = useState('student'); 
-  // const { userRole, setUserRole } = useContext(UserRoleContext);
-  const [userRole, setUserRole] = useAtom(userRoleAtom);
-  const [userName ,setUserName] = useAtom(userNameAtom);
+  const { userRole, userName } = useContext(UserRoleContext);
+ 
   //setUserRole('student');
   const socket = useSelector((state)=>state.socket)
   const [chatMessage, setChatMessage] = useState("");
@@ -168,8 +167,8 @@ export function Avatar({
    <option value="student">团员</option>
    <option value="teacher">老师</option>
    </select> */}
-      {/* 人物昵称标签 */}
-      <Html position-y={2.2}>
+    {/* 人物昵称标签 */}
+    <Html position-y={2.2}>
         <div className="w-20 text-white text-center p-3 px-6 -translate-x-1/2">
           <p className="absolute text-small">{userRole} {userName}</p>
         </div>
@@ -220,7 +219,7 @@ export function Avatar({
         <primitive object={clone} ref={avatar} />
       </motion.group>
     </group>
-    
+
   );
 }
 useGLTF.preload(

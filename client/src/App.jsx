@@ -13,8 +13,12 @@ import {
 import { UI } from "./components/UI";
 import { Provider } from "react-redux";
 import store from "./store";
+import UserRoleContext from './components/UserRoleContext';
+
 
 function App() {
+  const userRole = "student"; // 可以从服务器获取或通过其他方式动态获取
+  const userName = "张三";
   const [roomID] = useAtom(roomIDAtom);          // 获取roomID的变化情况
   const { progress } = useProgress();           // 获取加载进度
   const [loaded, setLoaded] = useState(false); // 默认资源未加载
@@ -27,26 +31,24 @@ function App() {
   }, [progress,items]);
 
   return (
-    // Redux store 仅提供给你的 React 组件，需要自己触发创建socket对象
-    <Provider store={store}>   
-    <>
-      <SocketManager />
-      <Canvas
-        shadows
-        camera={{
-          position: [0, 8, 2],
-          fov: 30,
-        }}
-      >
-        <color attach="background" args={["#ffffff"]} />
-        <ScrollControls pages={roomID ? 4 : 0}>
-          <Experience loaded={loaded} />
-        </ScrollControls>
-        {/* 加载完毕渲染UI */}
-      </Canvas>
-      <Loader loaded={loaded} />
-      {loaded && <UI />}
-    </>
+    <Provider store={store}>
+      <UserRoleContext.Provider value={{ userRole, userName }}>
+        <SocketManager />
+        <Canvas
+          shadows
+          camera={{
+            position: [0, 8, 2],
+            fov: 30,
+          }}
+        >
+          <color attach="background" args={["#ffffff"]} />
+          <ScrollControls pages={roomID ? 4 : 0}>
+            <Experience loaded={loaded} />
+          </ScrollControls>
+        </Canvas>
+        <Loader loaded={loaded} />
+        {loaded && <UI />}
+      </UserRoleContext.Provider>
     </Provider>
   );
 }
