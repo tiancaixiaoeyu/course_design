@@ -22,17 +22,21 @@ import {
   shopModeAtom,
 } from "./UI";
 
+
 import { TextureLoader } from "three";
-const texture = new TextureLoader().load("/textures/grass.jag");
+const texture = new TextureLoader().load('/textures/grass.jag')
+
+
 
 export const roomItemsAtom = atom([]);
 
 export const Room = () => {
-  const socket = useSelector((state) => state.socket);
+
+  const socket = useSelector((state)=>state.socket)
 
   const [buildMode] = useAtom(buildModeAtom);
   const [shopMode, setShopMode] = useAtom(shopModeAtom);
-  const [characters] = useAtom(charactersAtom);
+  const [characters, setCharacters] = useAtom(charactersAtom);
   const [map] = useAtom(mapAtom);
   const [items, setItems] = useAtom(roomItemsAtom);
   const [onFloor, setOnFloor] = useState(false);
@@ -87,8 +91,7 @@ export const Room = () => {
   }, [draggedItem]);
 
   useEffect(() => {
-    if (draggedItem === null) {
-      // 假值
+    if (draggedItem === null) {  // 假值
       return;
     }
     const item = items[draggedItem];
@@ -154,11 +157,10 @@ export const Room = () => {
   const state = useThree((state) => state);
 
   useEffect(() => {
-    if (buildMode) {
-      // Build模式，设置items展示Build模式下的项目
-      setItems(map?.items || []); // map?为真，输出其items属性
-    } else {
-      // console.log("itemsUpdate");
+    if (buildMode) { // Build模式，设置items展示Build模式下的项目
+      setItems(map?.items || []);  // map?为真，输出其items属性
+    } else { 
+     // console.log("itemsUpdate");
       socket.emit("itemsUpdate", items); // 非Build模式，将items数据发送给服务器，同步给其他用户
     }
   }, [buildMode]);
@@ -207,6 +209,12 @@ export const Room = () => {
     [items]
   ); // 根据items来变化阴影，避免重复渲染
 
+  useEffect(() => {
+    socket.on("characters", (updatedCharacters) => {
+      setCharacters(updatedCharacters);
+    });
+  }, []);
+
   return (
     <>
       {shopMode && <Shop onItemSelected={onItemSelected} />}
@@ -228,6 +236,7 @@ export const Room = () => {
             canDrop={canDrop}
           />
         ))}
+
 
       {!shopMode && (
         <mesh
@@ -254,7 +263,7 @@ export const Room = () => {
           receiveShadow
         >
           {/* 房间平面大小+颜色*/}
-          <planeGeometry args={map.size} />
+          <planeGeometry args={map.size} />  
           <meshStandardMaterial color="#3B5323" />
           {/* <meshStandardMaterial map={texture}/> */}
         </mesh>
@@ -264,13 +273,20 @@ export const Room = () => {
       )}
       {!buildMode &&
         characters.map((character) => (
-          <Avatar
-            key={character.id}
-            position={gridToVector3(character.position)}
-            character={character}
-            avatarUrl={character.avatarUrl}
-          />
+          <Suspense key={character.session + "-" + character.id}>
+            <group>
+              <Avatar
+                id={character.id}
+                position={gridToVector3(character.position)}
+                hairColor={character.hairColor}
+                topColor={character.topColor}
+                bottomColor={character.bottomColor}
+                avatarUrl={character.avatarUrl}
+              />
+            </group>
+          </Suspense>
         ))}
     </>
   );
 };
+

@@ -14,45 +14,42 @@ import { useSelector } from "react-redux";
 import { userAtom } from "./SocketManager";
 import { motion } from "framer-motion-3d";
 // import { userRoleAtom } from "./UI";
-
+// import { userNameAtom } from "./UI";
 
 import { useContext } from "react";
 //import UserRoleContext from "./UserRoleContext";
-//import { charactersAtom } from "./SocketManager";
+import { charactersAtom } from "./SocketManager";
+import UserRoleContext from './UserRoleContext';
 
 const MOVEMENT_SPEED = 4;
 //const [userRole, setUserRole] = useState('student');
-//const userRole = "student";
-//const [characters] = useAtom(charactersAtom);
+const userRole = "student";
+const [characters] = useAtom(charactersAtom);
 
-export function Avatar({  // id,
+export function Avatar(
+  // id,
   // Role,
   // Name,
 
-  avatarUrl = "https://models.readyplayer.me/64f0265b1db75f90dcfd9e2c.glb",
-//avatarUrl = "https://models.readyplayer.me/6575b1a3b21c8b3e80ba1a83.glb",
-  character,
-  ...props}
+  // //avatarUrl = "https://models.readyplayer.me/64f0265b1db75f90dcfd9e2c.glb",
+   avatarUrl = "https://models.readyplayer.me/6575b1a3b21c8b3e80ba1a83.glb",
+  characters,
+  ...props
 ) {
   //const { userRole, userName } = useContext(UserRoleContext);
+  const { userRole, userName } = useContext(UserRoleContext);
 
   //setUserRole('student');
   const socket = useSelector((state) => state.socket);
   const [chatMessage, setChatMessage] = useState("");
   const position = useMemo(() => props.position, []);
-
+  
   const avatar = useRef(); // 创建引用
   const [path, setPath] = useState();
   const { gridToVector3 } = useGrid();
 
   const group = useRef();
-  const { scene } = useGLTF(avatarUrl,{
-    onError: (error) => {
-      console.error('Model loading failed:', error);
-      avatarUrl = "https://models.readyplayer.me/6575b1a3b21c8b3e80ba1a83.glb";
-      // 可以在这里设置一个后备模型
-    }
-  });
+  const { scene } = useGLTF(avatarUrl);
   const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
   const { nodes } = useGraph(clone);
 
@@ -98,13 +95,12 @@ export function Avatar({  // id,
 
   useEffect(() => {
     function onPlayerDance(value) {
-      if (value.id === character?.id) {
+      if (value.id === id) {
         setIsDancing(true);
       }
     }
-    
     function onPlayerMove(value) {
-      if (value.id === character?.id) {
+      if (value.id === id) {
         const path = [];
         value.path?.forEach((gridPosition) => {
           path.push(gridToVector3(gridPosition));
@@ -116,13 +112,13 @@ export function Avatar({  // id,
     // 聊天功能的实现
     let chatMessageBubbleTimeout;
     function onPlayerChatMessage(value) {
-      if (value.id === character?.id) {
+      if (value.id === id) {
         setChatMessage(value.message);
         clearTimeout(chatMessageBubbleTimeout);
         setShowChatBubble(true);
         chatMessageBubbleTimeout = setTimeout(() => {
           setShowChatBubble(false);
-        }, 3500);
+        }, 3500); // 3.5s后消息才消失
       }
     }
 
@@ -134,7 +130,7 @@ export function Avatar({  // id,
       socket.off("playerMove", onPlayerMove);
       socket.off("playerChatMessage", onPlayerChatMessage);
     };
-  }, [character?.id, socket, gridToVector3]);
+  }, [id]);
 
   const [user] = useAtom(userAtom);
 
@@ -170,7 +166,7 @@ export function Avatar({  // id,
       {...props}
       position={position}
       dispose={null}
-      name={`character-${character?.id}`}
+      name={`character-${id}`}
     >
       {/* <select onChange={e => setUserRole(e.target.value)}>
    <option value="">请选择角色...</option>
@@ -181,7 +177,7 @@ export function Avatar({  // id,
       <Html position-y={2.2}>
         <div className="w-20 text-white text-center p-3 px-6 -translate-x-1/2">
           <p className="absolute text-small">
-            {character?.role} {character?.name}
+            {characters.role} {characters.name}
           </p>
         </div>
       </Html>
@@ -246,4 +242,3 @@ useGLTF.preload("/animations/M_Walk_001.glb");
 useGLTF.preload("/animations/M_Standing_Idle_001.glb");
 useGLTF.preload("/animations/M_Dances_011.glb");
 useGLTF.preload("/animations/M_Standing_Expressions_001.glb");
-export default Avatar;

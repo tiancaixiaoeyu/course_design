@@ -98,13 +98,12 @@ export function Avatar({  // id,
 
   useEffect(() => {
     function onPlayerDance(value) {
-      if (value.id === character?.id) {
+      if (value.id === id) {
         setIsDancing(true);
       }
     }
-    
     function onPlayerMove(value) {
-      if (value.id === character?.id) {
+      if (value.id === id) {
         const path = [];
         value.path?.forEach((gridPosition) => {
           path.push(gridToVector3(gridPosition));
@@ -116,13 +115,13 @@ export function Avatar({  // id,
     // 聊天功能的实现
     let chatMessageBubbleTimeout;
     function onPlayerChatMessage(value) {
-      if (value.id === character?.id) {
+      if (value.id === id) {
         setChatMessage(value.message);
         clearTimeout(chatMessageBubbleTimeout);
         setShowChatBubble(true);
         chatMessageBubbleTimeout = setTimeout(() => {
           setShowChatBubble(false);
-        }, 3500);
+        }, 3500); // 3.5s后消息才消失
       }
     }
 
@@ -134,7 +133,7 @@ export function Avatar({  // id,
       socket.off("playerMove", onPlayerMove);
       socket.off("playerChatMessage", onPlayerChatMessage);
     };
-  }, [character?.id, socket, gridToVector3]);
+  }, [character?.id]);
 
   const [user] = useAtom(userAtom);
 

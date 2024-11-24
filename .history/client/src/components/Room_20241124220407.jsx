@@ -264,12 +264,18 @@ export const Room = () => {
       )}
       {!buildMode &&
         characters.map((character) => (
-          <Avatar
-            key={character.id}
-            position={gridToVector3(character.position)}
-            character={character}
-            avatarUrl={character.avatarUrl}
-          />
+          <Suspense key={character.session + "-" + character.id}>
+            <group>
+              <Avatar
+                id={character.id}
+                position={gridToVector3(character.position)}
+                hairColor={character.hairColor}
+                topColor={character.topColor}
+                bottomColor={character.bottomColor}
+                avatarUrl={character.avatarUrl}
+              />
+            </group>
+          </Suspense>
         ))}
     </>
   );

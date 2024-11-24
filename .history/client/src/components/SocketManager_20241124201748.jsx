@@ -2,9 +2,9 @@ import { useGLTF } from "@react-three/drei";
 import { atom, useAtom } from "jotai";
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { userNameAtom, userRoleAtom } from "../store/atoms";
+import { userNameAtom, userRoleAtom } from '../store/atoms'
 
-export const charactersAtom = atom([]);
+export const charactersAtom = atom({ role: null, name: null });
 export const mapAtom = atom(null);
 export const userAtom = atom(null);
 export const itemsAtom = atom(null);
@@ -27,13 +27,13 @@ export const SocketManager = () => {
   const socket = useSelector((state) => state.socket); // 从 Redux store 中获取 socket
   useEffect(() => {
     if (socket) {
-      socket.emit("initialCharacterData", {
+      socket.emit('initialCharacterData', {
         Name: userName,
-        Role: userRole,
-      });
+        Role: userRole
+      })
       console.log("initialCharacterData", userName, userRole);
     }
-  }, [socket]); // 只在 socket 连接时执行
+  }, [socket]) // 只在 socket 连接时执行
   useEffect(() => {
     if (!socket) {
       dispatch({ type: "INIT_SOCKET" }); // 通过 Redux 中间件初始化 socket
@@ -93,8 +93,8 @@ export const SocketManager = () => {
       setUser(value.id); // 用户id
       setCharacters(value.characters);
       // 加入房间时发送用户信息
-      // const [userName] = useAtom(userNameAtom);
-      // const [userRole] = useAtom(userRoleAtom);
+      const [userName] = useAtom(userNameAtom);
+      const [userRole] = useAtom(userRoleAtom);
       if (userName && userRole) {
         socket.emit("setUserInfo", { userName, userRole });
       }

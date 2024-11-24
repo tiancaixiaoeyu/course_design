@@ -264,7 +264,7 @@ export const Room = () => {
       )}
       {!buildMode &&
         characters.map((character) => (
-          <Avatar
+          <Avatar 
             key={character.id}
             position={gridToVector3(character.position)}
             character={character}

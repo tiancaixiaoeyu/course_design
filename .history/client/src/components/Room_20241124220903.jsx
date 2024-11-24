@@ -32,7 +32,7 @@ export const Room = () => {
 
   const [buildMode] = useAtom(buildModeAtom);
   const [shopMode, setShopMode] = useAtom(shopModeAtom);
-  const [characters] = useAtom(charactersAtom);
+  const [characters, setCharacters] = useAtom(charactersAtom);
   const [map] = useAtom(mapAtom);
   const [items, setItems] = useAtom(roomItemsAtom);
   const [onFloor, setOnFloor] = useState(false);
@@ -207,6 +207,18 @@ export const Room = () => {
     [items]
   ); // 根据items来变化阴影，避免重复渲染
 
+  // 添加监听器来实时更新角色
+  useEffect(() => {
+    socket.on("characters", (updatedCharacters) => {
+      setCharacters(updatedCharacters);
+      console.log("Characters updated:", updatedCharacters); // 添加日志
+    });
+
+    return () => {
+      socket.off("characters");
+    };
+  }, [socket, setCharacters]);
+
   return (
     <>
       {shopMode && <Shop onItemSelected={onItemSelected} />}
@@ -264,7 +276,7 @@ export const Room = () => {
       )}
       {!buildMode &&
         characters.map((character) => (
-          <Avatar
+          <Avatar 
             key={character.id}
             position={gridToVector3(character.position)}
             character={character}

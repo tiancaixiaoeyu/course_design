@@ -14,7 +14,7 @@ import { UI } from "./components/UI";
 import { Provider } from "react-redux";
 import store from "./store";
 import UserRoleContext from "./components/UserRoleContext";
-import { userNameAtom, userRoleAtom } from "./store/atoms";
+import { userNameAtom, userRoleAtom } from "./store/atoms";  
 function App() {
   const [userRole] = useAtom(userRoleAtom); // 可以从服务器获取或通过其他方式动态获取
   const [userName] = useAtom(userNameAtom);

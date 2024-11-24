@@ -124,7 +124,7 @@ io.on("connection", (socket) => {
       rooms: rooms.map((room) => ({
         id: room.id,
         name: room.name,
-
+        
         nbCharacters: room.characters.length,
       })),
       items,
@@ -133,40 +133,33 @@ io.on("connection", (socket) => {
     //  2. 监听：用户加入房间的事件
     socket.on("joinRoom", (roomId, opts) => {
       room = rooms.find((room) => room.id === roomId);
-      if (!room) {
-        return;
-      }
-      console.log("服务器收到的数据:", opts);
+      if (!room) return;
+      
       socket.join(room.id);
-      userMap.set(socket.id, {
-        role: opts.role,
-        name: opts.name,
-      });
       character = {
-        // 创建角色
         id: socket.id,
-        session: parseInt(Math.random() * 1000), // 会话ID
+        session: parseInt(Math.random() * 1000),
         position: generateRandomPosition(room),
         avatarUrl: opts.avatarUrl,
         role: opts.role,
-        name: opts.name,
+        name: opts.name
       };
-
-      room.characters.push(character); // 将角色加入房间
+      
+      room.characters.push(character);
+      
       // 立即广播更新给房间内所有用户
-  io.to(room.id).emit("characters", room.characters);
-      console.log("room.characters", room.characters);
+      io.to(room.id).emit("characters", room.characters);
+      
+      // 然后发送房间信息给新加入的用户
       socket.emit("roomJoined", {
-        // 告知所选房间的具体信息(摆设，房间内的用户)给对应的socket.id
         map: {
           gridDivision: room.gridDivision,
           size: room.size,
           items: room.items,
         },
         characters: room.characters,
-        id: socket.id,
+        id: socket.id
       });
-      onRoomUpdate(); // 更新房间信息
     });
 
     const onRoomUpdate = () => {

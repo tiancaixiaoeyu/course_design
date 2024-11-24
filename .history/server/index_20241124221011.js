@@ -153,8 +153,6 @@ io.on("connection", (socket) => {
       };
 
       room.characters.push(character); // 将角色加入房间
-      // 立即广播更新给房间内所有用户
-  io.to(room.id).emit("characters", room.characters);
       console.log("room.characters", room.characters);
       socket.emit("roomJoined", {
         // 告知所选房间的具体信息(摆设，房间内的用户)给对应的socket.id
