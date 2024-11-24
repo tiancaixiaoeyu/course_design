@@ -1,0 +1,11 @@
+{
+  "name": "your-project-name",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "concurrently \"cd client && yarn dev\" \"cd server && node index.js\"",
+    "install-all": "npm install && cd client && yarn install && cd ../server && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
